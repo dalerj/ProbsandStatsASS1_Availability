@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Availability Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Team Availability Tool</h1>
+    <div class="form-container">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter your name">
+
+        <h3>Select Your Availability:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>8 AM</th>
+                    <th>1 PM</th>
+                    <th>7 PM</th>
+                </tr>
+            </thead>
+            <tbody id="availability-table">
+                <tr>
+                    <td>Tuesday</td>
+                    <td><input type="checkbox" data-day="Tuesday" data-time="8 AM"></td>
+                    <td><input type="checkbox" data-day="Tuesday" data-time="1 PM"></td>
+                    <td><input type="checkbox" data-day="Tuesday" data-time="7 PM"></td>
+                </tr>
+                <tr>
+                    <td>Wednesday</td>
+                    <td><input type="checkbox" data-day="Wednesday" data-time="8 AM"></td>
+                    <td><input type="checkbox" data-day="Wednesday" data-time="1 PM"></td>
+                    <td><input type="checkbox" data-day="Wednesday" data-time="7 PM"></td>
+                </tr>
+                <tr>
+                    <td>Saturday</td>
+                    <td><input type="checkbox" data-day="Saturday" data-time="8 AM"></td>
+                    <td><input type="checkbox" data-day="Saturday" data-time="1 PM"></td>
+                    <td><input type="checkbox" data-day="Saturday" data-time="7 PM"></td>
+                </tr>
+                <tr>
+                    <td>Sunday</td>
+                    <td><input type="checkbox" data-day="Sunday" data-time="8 AM"></td>
+                    <td><input type="checkbox" data-day="Sunday" data-time="1 PM"></td>
+                    <td><input type="checkbox" data-day="Sunday" data-time="7 PM"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button onclick="submitAvailability()">Submit Availability</button>
+    </div>
+
+    <h2>Availability Summary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Time Slot</th>
+                <th>Available People</th>
+            </tr>
+        </thead>
+        <tbody id="summary-table">
+        </tbody>
+    </table>
+
+    <script>
+        const availabilityData = {};
+
+        function submitAvailability() {
+            const name = document.getElementById('name').value.trim();
+            if (!name) {
+                alert('Please enter your name.');
+                return;
+            }
+
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    const day = checkbox.dataset.day;
+                    const time = checkbox.dataset.time;
+                    const timeSlot = `${day} ${time}`;
+
+                    if (!availabilityData[timeSlot]) {
+                        availabilityData[timeSlot] = [];
+                    }
+
+                    if (!availabilityData[timeSlot].includes(name)) {
+                        availabilityData[timeSlot].push(name);
+                    }
+                }
+            });
+
+            updateSummaryTable();
+            alert('Availability submitted successfully!');
+        }
+
+        function updateSummaryTable() {
+            const summaryTable = document.getElementById('summary-table');
+            summaryTable.innerHTML = '';
+
+            for (const [timeSlot, people] of Object.entries(availabilityData)) {
+                const row = document.createElement('tr');
+
+                const timeSlotCell = document.createElement('td');
+                timeSlotCell.textContent = timeSlot;
+                row.appendChild(timeSlotCell);
+
+                const peopleCell = document.createElement('td');
+                peopleCell.textContent = people.join(', ');
+                row.appendChild(peopleCell);
+
+                summaryTable.appendChild(row);
+            }
+        }
+    </script>
+</body>
+
+</html>
